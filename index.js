@@ -1,5 +1,4 @@
 function init(onlyRessetings = false) {
-  console.log('awd')
   const accordionBlockNodelist = document.querySelectorAll('[data-accordion-block]')
 
   accordionBlockNodelist.forEach((accardionBlockNode)=> {
@@ -31,10 +30,8 @@ function setPreset(body) {
 }
 
 function toggleAccordion(body, thiBlock) {
-  console.log('test')
   const accordionItems = thiBlock.querySelectorAll('.accordion-item__body:not(.accordion-item__body--is-hidden)')
 
-  console.log(accordionItems)
   body.classList.toggle('accordion-item__body--is-hidden')
 
   accordionItems.forEach((el) => {
