@@ -65,11 +65,16 @@ class Accordion {
   }
 
   initSettings() {
+    const _isOpen = this.isOpen
     this.body.style.transition = 'none'
     this.body.style.maxHeight = ''
     this.open()
     this._maxHeight = `${this.body.getBoundingClientRect().height}px`
     this.close()
+
+    if(_isOpen) {
+      this.open()
+    }
 
     setTimeout(() => {
       this.body.style.transition = `all ${this.options.transition.transitionDuration/1000}s ${this.options.transition.transitionFunction}`
