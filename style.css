@@ -13,6 +13,10 @@ h1 {
   font-size: 30px;
 }
 
+p {
+  margin: 0 0 15px 0;
+}
+
 .container {
   max-width: 980px;
   margin: 0 auto;
@@ -49,16 +53,12 @@ h1 {
 }
 
 .accordion-item__body {
-  transition: all 0.5s ease;
   padding-top: 20px;
   margin-top: 20px;
   border-top: 1px solid black;
   overflow: hidden;
 }
 
-.accordion-item__body--is-hidden {
-  padding: 0;
-  margin: 0;
+.accordion-item__body:not(.is-opened) {
   border-color: transparent;
-  max-height: 0 !important;
 }
