@@ -1,6 +1,6 @@
 class Accordion {
   // private
-  _maxHeight = ''
+  maxHeight = ''
 
   accordionBlock = null
   btn = null
