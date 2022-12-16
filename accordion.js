@@ -1,5 +1,8 @@
 class Accordion {
-  maxHeight = ''
+  // private
+  _callStack = null
+  _maxHeight = ''
+
   accordionBlock = null
   btn = null
   body = null
@@ -8,7 +11,8 @@ class Accordion {
     transition: {
       transitionDuration: 0,
       transitionFunction: ''
-    }
+    },
+    scrollToOpened: false
   }
   selectors = {
     accordionBlock: null,
@@ -83,11 +87,28 @@ class Accordion {
     return this.body.classList.contains('is-opened')
   }
 
+  afterAnimate(fn) {
+    this._callStack = setTimeout(fn.bind(this), this.options.transition.transitionDuration );
+  }
+  
+  scrollToOpened() {
+    const scrollY = window.scrollY + this.accordionBlock.getBoundingClientRect().top
+  
+    window.scrollTo({
+      top: scrollY,
+      behavior: "smooth"
+    })
+  }
+
   open(el = this.body) {
     el.style.maxHeight = this._maxHeight
     el.style.padding = ''
     el.style.margin = ''
     el.classList.add('is-opened')
+
+    if (this.options.scrollToOpened) {
+      this.afterAnimate(this.scrollToOpened)
+    }
   }
 
   close(el = this.body) {
@@ -95,6 +116,10 @@ class Accordion {
     el.style.padding = '0px'
     el.style.margin = '0px'
     el.classList.remove('is-opened')
+
+    if (this.options.scrollToOpened) {
+      clearTimeout(this._callStack)
+    }
   }
 
   onToggle() {
@@ -126,8 +151,9 @@ class AccordionDefined {
       transition: {
         transitionDuration: 0,
         transitionFunction: ''
-      }
-    }
+      },
+      scrollToOpened: false
+    },
   }
   
   constructor(settings) {
@@ -172,7 +198,8 @@ class AccordionDefined {
       transition: {
         transitionDuration: 500,
         transitionFunction: 'ease'
-      }
+      },
+      scrollToOpened: true
     }
   }
   new AccordionDefined(settings)
