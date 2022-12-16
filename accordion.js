@@ -1,7 +1,5 @@
 class Accordion {
-  // private
   maxHeight = ''
-
   accordionBlock = null
   btn = null
   body = null
@@ -72,7 +70,7 @@ class Accordion {
     this._maxHeight = `${this.body.getBoundingClientRect().height}px`
     this.close()
 
-    if(_isOpen) {
+    if (_isOpen) {
       this.open()
     }
 
