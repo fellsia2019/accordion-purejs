@@ -76,6 +76,7 @@ class Accordion {
 
     if (_isOpen) {
       this.open()
+      this.clearAfterAnimate()
     }
 
     setTimeout(() => {
@@ -89,6 +90,10 @@ class Accordion {
 
   afterAnimate(fn) {
     this._callStack = setTimeout(fn.bind(this), this.options.transition.transitionDuration );
+  }
+
+  clearAfterAnimate() {
+    clearTimeout(this._callStack)
   }
   
   scrollToOpened() {
@@ -118,7 +123,7 @@ class Accordion {
     el.classList.remove('is-opened')
 
     if (this.options.scrollToOpened) {
-      clearTimeout(this._callStack)
+      this.clearAfterAnimate()
     }
   }
 
