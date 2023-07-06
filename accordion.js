@@ -12,7 +12,8 @@ class Accordion {
       transitionDuration: 0,
       transitionFunction: ''
     },
-    scrollToOpened: false
+    scrollToOpened: false,
+    closeAll: false
   }
   selectors = {
     accordionBlock: null,
@@ -130,11 +131,13 @@ class Accordion {
   onToggle() {
     const accordionItems = this.parrentNode.querySelectorAll(this.selectors.accordion)
    
-    accordionItems.forEach(el => {
-      if (el !== this.body) {
-        this.close(el)
-      }
-    })
+    if (this.options.closeAll) {
+      accordionItems.forEach(el => {
+        if (el !== this.body) {
+          this.close(el)
+        }
+      })
+    }
 
     if (this.isOpen) {
       this.close()
@@ -166,11 +169,11 @@ class AccordionDefined {
       this.settings = settings
     }
 
-    this.init()
+    this.init(document)
   }
 
-  init() {
-    const accordionBlockNodelist = document.querySelectorAll(this.settings.selectors.accordionBlock)
+  init(content) {
+    const accordionBlockNodelist = content.querySelectorAll(this.settings.selectors.accordionBlock)
 
     if (!accordionBlockNodelist || !accordionBlockNodelist.length) return
 
@@ -186,7 +189,13 @@ class AccordionDefined {
           options: this.settings.options,
           selectors: this.settings.selectors
         })
+
+        const accordionsNextlevelContent = el.querySelector(this.settings.selectors.accordion)
+        if (!accordionsNextlevelContent) return
+
+        this.init(accordionsNextlevelContent)
       })
+
     })
   }
 }
@@ -204,7 +213,8 @@ class AccordionDefined {
         transitionDuration: 500,
         transitionFunction: 'ease'
       },
-      scrollToOpened: true
+      scrollToOpened: true,
+      closeAll: false,
     }
   }
   new AccordionDefined(settings)
