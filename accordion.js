@@ -86,7 +86,7 @@ class Accordion {
   }
 
   get isOpen() {
-    return this.body.classList.contains('is-opened')
+    return this.accordionBlock.classList.contains('is-opened')
   }
 
   afterAnimate(fn) {
@@ -110,18 +110,20 @@ class Accordion {
     el.style.maxHeight = this._maxHeight
     el.style.padding = ''
     el.style.margin = ''
-    el.classList.add('is-opened')
+    const accordionBlock = el.closest(this.selectors.accordionItem)
+    accordionBlock.classList.add('is-opened')
 
     if (this.options.scrollToOpened) {
       this.afterAnimate(this.scrollToOpened)
     }
   }
-
+  
   close(el = this.body) {
     el.style.maxHeight = '0px'
     el.style.padding = '0px'
     el.style.margin = '0px'
-    el.classList.remove('is-opened')
+    const accordionBlock = el.closest(this.selectors.accordionItem)
+    accordionBlock.classList.remove('is-opened')
 
     if (this.options.scrollToOpened) {
       this.clearAfterAnimate()
@@ -213,7 +215,7 @@ class AccordionDefined {
         transitionDuration: 500,
         transitionFunction: 'ease'
       },
-      scrollToOpened: true,
+      scrollToOpened: false,
       closeAll: false,
     }
   }
