@@ -2,7 +2,7 @@ class Accordion {
   // private
   _callStack = null
   _maxHeight = ''
-
+  _isOpenBeforeDestroy = false
   accordionBlock = null
   btn = null
   body = null
@@ -41,6 +41,7 @@ class Accordion {
     if (!properties.accordionBlock || !(properties.accordionBlock instanceof HTMLElement)) {
       throw new Error('accordionBlock must be defined and must be instanceof HTMLElement')
     }
+
     this.parrentNode = properties.parrentNode
 
     if (properties.options) {
@@ -52,23 +53,28 @@ class Accordion {
     }
 
     this.init()
-  }
-
-  init() {
-    this.btn = this.accordionBlock.querySelector(this.selectors.accordionBtn);
-    this.body = this.accordionBlock.querySelector(this.selectors.accordion);
-
-    this.initSettings()
     this.initEvents()
   }
 
-  initEvents() {
-    this.btn.addEventListener('click', ()=> this.onToggle());
-    window.addEventListener('resize', ()=> this.initSettings())
+  init(isOpen = this.isOpen) {
+    this.btn = this.accordionBlock.querySelector(this.selectors.accordionBtn);
+    this.body = this.accordionBlock.querySelector(this.selectors.accordion);
+    this.initSettings(isOpen)
   }
 
-  initSettings() {
-    const _isOpen = this.isOpen
+  initEvents() {
+    this.btn.addEventListener('click', this.onToggle.bind(this));
+  }
+
+  destroy() {
+    this._isOpenBeforeDestroy = this.isOpen
+    this.body.style.transition = 'none'
+    this.body.style.maxHeight = ''
+    this.open()
+  }
+
+  initSettings(isOpen = this.isOpen) {
+    const _isOpen = isOpen
     this.body.style.transition = 'none'
     this.body.style.maxHeight = ''
     this.open()
@@ -165,6 +171,8 @@ class AccordionDefined {
       scrollToOpened: false
     },
   }
+
+  accordions = []
   
   constructor(settings) {
     if (settings && settings.selectors) {
@@ -174,31 +182,60 @@ class AccordionDefined {
     this.init(document)
   }
 
+  getFilteredAccordion(accordions, content) {
+    const accordionBody = content.querySelector(this.settings.selectors.accordion)
+
+    return Array.from(accordions)
+      .filter(accordion => {
+        const intoAccordion = accordion.closest(this.settings.selectors.accordion)
+          && accordionBody === accordion.closest(this.settings.selectors.accordion)
+        if (!intoAccordion) return accordion
+      })
+  }
+
   init(content) {
     const accordionBlockNodelist = content.querySelectorAll(this.settings.selectors.accordionBlock)
-
+    
     if (!accordionBlockNodelist || !accordionBlockNodelist.length) return
+    
+    const accordionBlocks = this.getFilteredAccordion(accordionBlockNodelist, content)
 
-    accordionBlockNodelist.forEach(item => {
-      const accordions = item.querySelectorAll(this.settings.selectors.accordionItem);
+    accordionBlocks.forEach(item => {
+      const accordionsNodeList = item.querySelectorAll(this.settings.selectors.accordionItem);
+      if (!accordionsNodeList || !accordionsNodeList.length) return
 
-      if (!accordions || !accordions.length) return
+      const accordions = this.getFilteredAccordion(accordionsNodeList, content)
 
       accordions.forEach(el => {
-        new Accordion({
+        const AccordionInstance = new Accordion({
           accordionBlock: el,
           parrentNode: item,
           options: this.settings.options,
-          selectors: this.settings.selectors
+          selectors: this.settings.selectors,
         })
 
+        this.accordions.push(AccordionInstance)
+
         const accordionsNextlevelContent = el.querySelector(this.settings.selectors.accordion)
-        if (!accordionsNextlevelContent) return
+        if (accordionsNextlevelContent) {
+          this.init(accordionsNextlevelContent)
+        }
 
-        this.init(accordionsNextlevelContent)
       })
-
     })
+
+    window.addEventListener('resize', this.reInit.bind(this))
+  }
+
+  reInit() {
+    this.accordions
+      .map(accordion => {
+        accordion.destroy()
+        return accordion
+      })
+      .forEach(accordion => {
+        accordion.initSettings(accordion._isOpenBeforeDestroy)
+      })
   }
 }
 
@@ -221,5 +258,3 @@ class AccordionDefined {
   }
   new AccordionDefined(settings)
 })()
-
-
