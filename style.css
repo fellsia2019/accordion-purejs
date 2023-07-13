@@ -43,7 +43,7 @@ p {
   transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
-  justify-content: ;
+  justify-content: center;
 }
 
 .accordion-item__header-icon svg {
