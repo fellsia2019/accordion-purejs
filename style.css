@@ -34,11 +34,28 @@ p {
   padding: 10px
 }
 
+.accordion-item__header-icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+}
+
+.accordion-item__header-icon svg {
+  transition: all 0.3s ease;
+}
+
+.accordion-item.is-opened > .accordion-item__header .accordion-item__header-icon svg {
+  transform: rotate(180deg);
+}
+
 .accordion-item:last-child {
   margin-bottom: 0;
 }
 
 .accordion-item__header {
+  position: relative;
   cursor: pointer;
   transition: all 0.5s ease;
   padding: 10px;
