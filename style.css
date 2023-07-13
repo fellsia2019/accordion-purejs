@@ -35,14 +35,20 @@ p {
 }
 
 .accordion-item__header-icon {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   position: absolute;
-  right: 0;
+  right: 10px;
   top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: ;
 }
 
 .accordion-item__header-icon svg {
+  width: 100%;
+  height: auto;
   transition: all 0.3s ease;
 }
 
@@ -58,8 +64,7 @@ p {
   position: relative;
   cursor: pointer;
   transition: all 0.5s ease;
-  padding: 10px;
-
+  padding: 10px 40px 10px 10px;
 }
 .accordion-item__header:hover {
   background-color: white;
