@@ -70,14 +70,14 @@ class Accordion {
     this._isOpenBeforeDestroy = this.isOpen
     this.body.style.transition = 'none'
     this.body.style.maxHeight = ''
-    this.open()
+    this.body.style.padding = ''
+    this.body.style.margin = ''
   }
 
   initSettings(isOpen = this.isOpen) {
     const _isOpen = isOpen
     this.body.style.transition = 'none'
     this.body.style.maxHeight = ''
-    this.open()
     this._maxHeight = `${this.body.getBoundingClientRect().height}px`
     this.close()
 
@@ -225,6 +225,11 @@ class AccordionDefined {
     })
 
     window.addEventListener('resize', this.reInit.bind(this))
+    window.addEventListener('reinitAccordion', () => {
+      setTimeout(() => {
+        this.reInit.bind(this)()
+      }, 10);
+    })
   }
 
   reInit() {
