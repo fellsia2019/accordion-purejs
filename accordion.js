@@ -66,6 +66,10 @@ class Accordion {
     this.btn.addEventListener('click', this.onToggle.bind(this));
   }
 
+  removeEvent() {
+    this.btn.removeEventListener('click', this.onToggle.bind(this));
+  }
+
   destroy() {
     this._isOpenBeforeDestroy = this.isOpen
     this.body.style.transition = 'none'
@@ -170,6 +174,7 @@ class AccordionDefined {
       },
       scrollToOpened: false
     },
+    context: document,
   }
 
   accordions = []
@@ -179,7 +184,7 @@ class AccordionDefined {
       this.settings = settings
     }
 
-    this.init(document)
+    this.init(this.settings.context || document)
   }
 
   getFilteredAccordion(accordions, content) {
@@ -225,11 +230,24 @@ class AccordionDefined {
     })
 
     window.addEventListener('resize', this.reInit.bind(this))
-    window.addEventListener('reinitAccordion', () => {
-      setTimeout(() => {
-        this.reInit.bind(this)()
-      }, 10);
-    })
+    window.addEventListener('reinitAccordion', this.reinitAccordion.bind(this))
+  }
+
+  reinitAccordion() {
+    setTimeout(() => {
+      this.reInit.bind(this)()
+    }, 10);
+  }
+
+  destroy() {
+    window.removeEventListener('resize', this.reInit.bind(this))
+    window.removeEventListener('reinitAccordion', this.reinitAccordion.bind(this))
+    this.accordions
+      .map(accordion => {
+        accordion.destroy()
+        accordion.removeEvent()
+        return accordion
+      })
   }
 
   reInit() {
@@ -259,7 +277,10 @@ class AccordionDefined {
       },
       scrollToOpened: false,
       closeAll: false,
-    }
+    },
+    context: document,
   }
+
+  window.defaultAccordionSettings = settings
   new AccordionDefined(settings)
 })()
