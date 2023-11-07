@@ -192,9 +192,10 @@ class AccordionDefined {
 
     return Array.from(accordions)
       .filter(accordion => {
-        const intoAccordion = accordion.closest(this.settings.selectors.accordion)
-          && accordionBody === accordion.closest(this.settings.selectors.accordion)
-        if (!intoAccordion) return accordion
+        const acc = accordion.closest(this.settings.selectors.accordion)
+        const intoAccordion = accordionBody === acc
+
+        if (!accordion.hasAttribute('accordion-item-is-inited') && !intoAccordion) return accordion
       })
   }
 
@@ -202,7 +203,6 @@ class AccordionDefined {
     const accordionBlockNodelist = content.querySelectorAll(this.settings.selectors.accordionBlock)
     
     if (!accordionBlockNodelist || !accordionBlockNodelist.length) return
-    
     const accordionBlocks = this.getFilteredAccordion(accordionBlockNodelist, content)
 
     accordionBlocks.forEach(item => {
@@ -212,20 +212,23 @@ class AccordionDefined {
       const accordions = this.getFilteredAccordion(accordionsNodeList, content)
 
       accordions.forEach(el => {
+        if (!el.hasAttribute('accordion-item-is-inited')) {
+
         const AccordionInstance = new Accordion({
           accordionBlock: el,
           parrentNode: item,
           options: this.settings.options,
           selectors: this.settings.selectors,
         })
+        el.setAttribute('accordion-item-is-inited', '')
 
         this.accordions.push(AccordionInstance)
+        }
 
         const accordionsNextlevelContent = el.querySelector(this.settings.selectors.accordion)
         if (accordionsNextlevelContent) {
           this.init(accordionsNextlevelContent)
         }
-
       })
     })
 
