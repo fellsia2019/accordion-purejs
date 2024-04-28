@@ -1,3 +1,10 @@
+window.addEventListener('resize', () => {
+  if (window._prevInnerWidth === window.innerWidth) return
+  
+  window.dispatchEvent(new Event('custom-resize'))
+  window._prevInnerWidth = window.innerWidth
+})
+
 class Accordion {
   // private
   _callStack = null
@@ -82,7 +89,8 @@ class Accordion {
     const _isOpen = isOpen
     this.body.style.transition = 'none'
     this.body.style.maxHeight = ''
-    this._maxHeight = `${this.body.getBoundingClientRect().height}px`
+    this._maxHeight = `${this.body.scrollHeight}px`
+
     this.close()
 
     if (_isOpen) {
@@ -232,7 +240,7 @@ class AccordionDefined {
       })
     })
 
-    window.addEventListener('resize', this.reInit.bind(this))
+    window.addEventListener('custom-resize', this.reInit.bind(this))
     window.addEventListener('reinitAccordion', this.reinitAccordion.bind(this))
   }
 
@@ -243,7 +251,7 @@ class AccordionDefined {
   }
 
   destroy() {
-    window.removeEventListener('resize', this.reInit.bind(this))
+    window.removeEventListener('custom-resize', this.reInit.bind(this))
     window.removeEventListener('reinitAccordion', this.reinitAccordion.bind(this))
     this.accordions
       .map(accordion => {
